@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inicio</title>
+  <title>Fiestapp</title>
+  <!-- 1. Leaflet core & Leaflet‑draw CSS  -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="" />
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
   <style>
     body {
       margin: 0;
@@ -26,9 +36,7 @@
       gap: 20px;
     }
 
-    .logo img {
-      height: 50px;
-    }
+    .logo img { height: 50px; }
 
     .nav-center {
       display: flex;
@@ -52,15 +60,9 @@
       border-radius: 8px;
     }
 
-    .nav-links a:hover {
-      background-color: #333;
-      transform: scale(1.05);
-    }
+    .nav-links a:hover { background-color: #333; transform: scale(1.05); }
 
-    .nav-links a.active {
-      background-color: #00bcd4;
-      font-weight: bold;
-    }
+    .nav-links a.active { background-color: #00bcd4; font-weight: bold; }
 
     .search-bar {
       display: flex;
@@ -90,16 +92,14 @@
       transition: background-color 0.3s ease;
     }
 
-    .search-bar button:hover {
-      background-color: #0097a7;
-    }
+    .search-bar button:hover { background-color: #0097a7; }
 
     section {
       display: grid;
       grid-template-columns: 7fr 3fr;
       gap: 30px;
       padding: 30px;
-      background-color:lightskyblue;
+      background-color: lightskyblue;
     }
 
     .mapa, .texto {
@@ -111,26 +111,24 @@
       flex-direction: column;
     }
 
-    .mapa h2,
-    .texto h2 {
+    .mapa h2, .texto h2 {
       text-align: center;
       font-size: 2.4em;
       font-weight: bold;
       color: #00bcd4;
-      background-color:bisque;
+      background-color: bisque;
       margin-bottom: 30px;
     }
 
-    .mapa iframe {
+    /* 2. Estilos para el contenedor dinámico del mapa  */
+    #map {
       width: 100%;
       height: 600px;
       border: none;
       border-radius: 10px;
     }
 
-    .texto {
-      padding: 20px;
-    }
+    .texto { padding: 20px; }
 
     .fiesta-card {
       border-bottom: 1px solid #ccc;
@@ -139,38 +137,15 @@
       transition: background-color 0.3s, transform 0.2s;
     }
 
-    .fiesta-card:hover {
-      background-color: #f0f0f0;
-      transform: scale(1.02);
-    }
+    .fiesta-card:hover { background-color: #f0f0f0; transform: scale(1.02); }
 
-    .fiesta-titulo {
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #333;
-    }
+    .fiesta-titulo { font-weight: bold; font-size: 1.1em; color: #333; }
+    .fiesta-ciudad { color: #777; font-size: 0.95em; }
+    .fiesta-fecha { font-size: 0.9em; color: #999; }
 
-    .fiesta-ciudad {
-      color: #777;
-      font-size: 0.95em;
-    }
+    .about { background-color: bisque; padding: 40px 30px 60px 30px; }
 
-    .fiesta-fecha {
-      font-size: 0.9em;
-      color: #999;
-    }
-
-    .about {
-      background-color: bisque;
-      padding: 40px 30px 60px 30px;
-    }
-
-    .about h2 {
-      font-size: 2.5em;
-      margin-bottom: 30px;
-      text-align: center;
-      color: #ff6600;
-    }
+    .about h2 { font-size: 2.5em; margin-bottom: 30px; text-align: center; color: #ff6600; }
 
     .about-content {
       display: grid;
@@ -188,12 +163,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    .about-text p {
-      font-size: 1.15em;
-      line-height: 1.7;
-      color: #333;
-      margin: 0;
-    }
+    .about-text p { font-size: 1.15em; line-height: 1.7; color: #333; margin: 0; }
 
     footer {
       background-color: #111;
@@ -215,15 +185,9 @@
       transition: background-color 0.3s ease;
     }
 
-    .footer-left a:hover {
-      background-color: #0097a7;
-    }
+    .footer-left a:hover { background-color: #0097a7; }
 
-    .footer-right {
-      display: flex;
-      gap: 20px;
-    }
-
+    .footer-right { display: flex; gap: 20px; }
     .footer-right a img {
       width: 28px;
       height: 28px;
@@ -231,71 +195,30 @@
       filter: brightness(0) invert(1);
     }
 
-    .footer-right a:hover img {
-      transform: scale(1.15);
-    }
+    .footer-right a:hover img { transform: scale(1.15); }
 
     @media (max-width: 900px) {
-      .about-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-      .about-text {
-        padding-top: 20px;
-      }
+      .about-content { grid-template-columns: 1fr; text-align: center; }
+      .about-text { padding-top: 20px; }
     }
 
     @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .nav-center {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .nav-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .search-bar {
-        justify-content: center;
-      }
-
-      section {
-        grid-template-columns: 1fr;
-        padding: 20px;
-      }
-
-      .mapa, .texto {
-        min-height: auto;
-      }
-
-      .mapa iframe {
-        height: 300px;
-      }
-
-      footer {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-      }
-
-      .footer-right {
-        justify-content: center;
-      }
+      nav { flex-direction: column; align-items: center; }
+      .nav-center { flex-direction: column; gap: 10px; }
+      .nav-links { flex-direction: column; align-items: center; }
+      .search-bar { justify-content: center; }
+      section { grid-template-columns: 1fr; padding: 20px; }
+      .mapa, .texto { min-height: auto; }
+      #map { height: 300px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .footer-right { justify-content: center; }
     }
   </style>
 </head>
 <body>
   <header>
     <nav>
-      <a href="index.html" class="logo">
-        <img src="images/logo_ardilla.png" alt="Logo FIESTATS" />
-      </a>
+      <a href="index.html" class="logo"><img src="images/logo_ardilla.png" alt="Logo FIESTATS" /></a>
       <div class="nav-center">
         <form class="search-bar" action="list.html" method="GET">
           <input type="text" name="q" placeholder="Buscar fiestas..." />
@@ -313,7 +236,7 @@
   <section>
     <div class="mapa">
       <h2>Ubicación en España</h2>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2700336.7166600837!2d-3.1851106499763255!3d40.215289897908306!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2ses!4v1749733507198!5m2!1ses!2ses" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div id="map"></div>
     </div>
     <div class="texto">
       <h2>Fiestas más recientes</h2>
@@ -343,32 +266,47 @@
   <div class="about">
     <h2>Sobre Nosotros</h2>
     <div class="about-content">
-      <div class="about-image">
-        <img src="images/logo_ardilla.png" alt="Logo grande" />
-      </div>
-      <div class="about-text">
-        <p>
-          En FIESTATS, nos apasiona conectar a las personas con las mejores fiestas y eventos locales. Recopilamos la información más actualizada para que nunca te pierdas una celebración. Nuestro objetivo es crear una comunidad activa y participativa alrededor del ocio, la cultura y la tradición en toda España.
-        </p>
-      </div>
+      <div class="about-image"><img src="images/logo_ardilla.png" alt="Logo grande" /></div>
+      <div class="about-text"><p>En FIESTATS, nos apasiona conectar a las personas con las mejores fiestas y eventos locales. Recopilamos la información más actualizada para que nunca te pierdas una celebración. Nuestro objetivo es crear una comunidad activa y participativa alrededor del ocio, la cultura y la tradición en toda España.</p></div>
     </div>
   </div>
 
   <footer>
-    <div class="footer-left">
-      <a href="contact.html">Contáctanos</a>
-    </div>
+    <div class="footer-left"><a href="contact.html">Contáctanos</a></div>
     <div class="footer-right">
-      <a href="https://www.instagram.com/" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" alt="Instagram" />
-      </a>
-      <a href="https://www.twitter.com/" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384017.png" alt="Twitter" />
-      </a>
-      <a href="https://www.facebook.com/" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" />
-      </a>
+      <a href="https://www.instagram.com/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" alt="Instagram" /></a>
+      <a href="https://www.twitter.com/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384017.png" alt="Twitter" /></a>
+      <a href="https://www.facebook.com/" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384005.png" alt="Facebook" /></a>
     </div>
   </footer>
+
+  <!-- Leaflet core JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- Lógica del mapa solo-lectura -->
+  <script>
+    // 1) Inicia el mapa
+    const map = L.map('map').setView([40.215, -3.185], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 2) Datos de marcadores + notas (podrías traerlos desde una API JSON)
+    const fiestas = [
+      {lat: 40.4168, lng: -3.7038, nota: 'San Antonio de la Florida — Sierra es gay x2'},
+      {lat: 38.9862, lng: -3.9291, nota: 'La Pandorga — Raul de Bruyne'},
+      {lat: 40.48198, lng: -3.36454, nota: 'Fiestas Patronales — Sierra es gay'},
+      {lat: 38.9943, lng: -1.8564, nota: 'Feria de Albacete — Torru indio'}
+    ];
+
+    // 3) Crea los marcadores y popups (solo lectura)
+    fiestas.forEach(({lat, lng, nota}) => {
+      L.marker([lat, lng]).addTo(map).bindPopup(nota);
+    });
+  </script>
 </body>
 </html>
+
