@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listado de Fiestas</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Tahoma,Verdana,sans-serif;background:#e0e0e0;color:#333;}
+
+    /* ===== NAVBAR ===== */
+    header{background:#1f1f1f;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+    nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 30px;gap:20px}
+    .logo img{height:50px}
+    .nav-center{display:flex;align-items:center;gap:40px;flex-grow:1;justify-content:center}
+    .nav-links{display:flex;gap:25px}
+    .nav-links a{color:#fff;text-decoration:none;padding:.6em 1.2em;border-radius:8px;font-size:1.05em;transition:.3s}
+    .nav-links a:hover{background:#333;transform:scale(1.05)}
+    .nav-links .active{background:#00bcd4;font-weight:bold}
+    .search-bar-global{display:flex;align-items:center;background:#fff;padding:6px 10px;border-radius:8px;gap:8px;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+    .search-bar-global input{border:none;outline:none;padding:6px 8px;border-radius:4px}
+
+    /* ===== FILTER PANEL ===== */
+    .filter-wrapper{background:#fff;padding:15px 30px;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+    details{width:100%}
+    summary{font-weight:bold;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+    summary::after{content:"⌄";transition:.3s}
+    details[open] summary::after{transform:rotate(180deg)}
+    .filters-grid{display:flex;flex-wrap:wrap;gap:30px;margin-top:15px}
+    .filter-block{display:flex;flex-direction:column;gap:8px}
+    .filter-block h4{font-size:.95em;color:#00bcd4}
+    .check-list{display:flex;flex-direction:column;gap:4px}
+    .check-list label{display:flex;align-items:center;gap:6px;cursor:pointer}
+    input[type=checkbox]{accent-color:#00bcd4;width:16px;height:16px}
+    .date-group{display:flex;gap:10px;align-items:center}
+    .date-group input{padding:6px 8px;border:1px solid #ccc;border-radius:8px}
+    .apply-btn{background:#00bcd4;color:#fff;border:none;padding:8px 18px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:12px;align-self:flex-start;transition:.3s}
+    .apply-btn:hover{background:#0097a7}
+
+    /* ===== RESULTS ===== */
+    .results{margin:30px auto;max-width:1200px;width:90%;display:flex;flex-direction:column;gap:0;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);overflow:hidden}
+    .fiesta-card{padding:18px 24px;display:block;text-decoration:none;color:inherit;border-bottom:1px solid #eee;transition:.3s}
+    .fiesta-card:hover{background:#f0f0f0;transform:scale(1.015)}
+    .fiesta-titulo{font-weight:bold;font-size:1.18em;color:#333}
+    .fiesta-ciudad{color:#777;font-size:.95em;margin-top:2px}
+    .fiesta-fecha{color:#999;font-size:.9em}
+
+    /* ===== PAGINATION ===== */
+    .pagination{display:flex;justify-content:center;gap:10px;margin:30px 0}
+    .page-btn{background:#fff;border:1px solid #ccc;padding:8px 14px;border-radius:6px;cursor:pointer;transition:.3s}
+    .page-btn.active,.page-btn:hover{background:#00bcd4;border-color:#00bcd4;color:#fff}
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:768px){
+      .nav-center{flex-direction:column;gap:10px}
+      .nav-links{flex-direction:column;align-items:center}
+      .filter-wrapper{padding:15px 20px}
+      .filters-grid{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <header>
+    <nav>
+      <a href="index.html" class="logo"><img src="images/logo_ardilla.png" alt="Logo FIESTATS" /></a>
+      <div class="nav-center">
+        <form class="search-bar-global" id="globalSearchForm"><input type="text" id="globalSearch" placeholder="Buscar fiestas..." /></form>
+        <div class="nav-links"><a href="maps.html">Mapas</a><a href="list.html" class="active">Listas</a><a href="contact.html">Contacto</a></div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== FILTERS ===== -->
+  <section class="filter-wrapper">
+    <details open>
+      <summary>Filtros ▼</summary>
+      <div class="filters-grid">
+        <!-- Provincia -->
+        <div class="filter-block">
+          <h4>Provincia</h4>
+          <div class="check-list" id="provChecks"></div>
+        </div>
+        <!-- Fechas -->
+        <div class="filter-block">
+          <h4>Rango de fechas</h4>
+          <div class="date-group"><input type="date" id="dateFrom"/><span>→</span><input type="date" id="dateTo"/></div>
+        </div>
+        <button class="apply-btn" id="applyFilters">Aplicar filtros</button>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== RESULTS LIST ===== -->
+  <div class="results" id="results"></div>
+  <div class="pagination" id="pagination"></div>
+
+  <script>
+    // ---- MOCK DATA ----
+    const fiestas=[
+      {id:1,titulo:'San Antonio de la Florida',ciudad:'Madrid',fecha:'2024-06-15'},
+      {id:2,titulo:'La Pandorga',ciudad:'Ciudad Real',fecha:'2024-07-30'},
+      {id:3,titulo:'Fiestas Patronales',ciudad:'Alcalá de Henares',fecha:'2024-08-24'},
+      {id:4,titulo:'Feria de Albacete',ciudad:'Albacete',fecha:'2024-09-07'},
+      {id:5,titulo:'Feria de Abril',ciudad:'Sevilla',fecha:'2024-04-12'},
+      {id:6,titulo:'Fallas',ciudad:'Valencia',fecha:'2024-03-15'},
+      {id:7,titulo:'La Mercè',ciudad:'Barcelona',fecha:'2024-09-24'},
+      {id:8,titulo:'Semana Grande',ciudad:'Bilbao',fecha:'2024-08-17'},
+      {id:9,titulo:'San Fermín',ciudad:'Pamplona',fecha:'2024-07-06'},
+      {id:10,titulo:'Fiestas de Burgos',ciudad:'Burgos',fecha:'2024-06-24'},
+      {id:11,titulo:'Fiesta del Pilar',ciudad:'Zaragoza',fecha:'2024-10-12'},
+      {id:12,titulo:'Carnaval de Cádiz',ciudad:'Cádiz',fecha:'2024-02-08'},
+      {id:13,titulo:'Cristo de los Faroles',ciudad:'Córdoba',fecha:'2024-09-14'},
+      {id:14,titulo:'Moros y Cristianos',ciudad:'Alicante',fecha:'2024-06-22'}
+    ];
+
+    // ---- BUILD PROVINCE CHECKBOXES ----
+    const provContainer=document.getElementById('provChecks');
+    const uniqueProvs=[...new Set(fiestas.map(f=>f.ciudad))].sort();
+    uniqueProvs.forEach(p=>{
+      const wrap=document.createElement('label');
+      wrap.innerHTML=`<input type="checkbox" value="${p}"><span>${p}</span>`;
+      provContainer.appendChild(wrap);
+    });
+
+    // ---- GLOBALS ----
+    const itemsPerPage=9;
+    let currentPage=1;
+    let filtered=[...fiestas];
+
+    // ---- RENDER FUNCTIONS ----
+    function formatFecha(date){const d=new Date(date);return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'}).replace('.','');}
+    function renderResults(){
+      const start=(currentPage-1)*itemsPerPage;
+      const slice=filtered.slice(start,start+itemsPerPage);
+      const resEl=document.getElementById('results');
+      resEl.innerHTML=slice.map(f=>`<a href="fiesta${f.id}.html" class="fiesta-card"><div class="fiesta-titulo">${f.titulo}</div><div class="fiesta-ciudad">${f.ciudad}</div><div class="fiesta-fecha">${formatFecha(f.fecha)}</div></a>`).join('');
+      renderPagination();
+    }
+    function renderPagination(){
+      const pages=Math.ceil(filtered.length/itemsPerPage);
+      const pag=document.getElementById('pagination');
+      pag.innerHTML=Array.from({length:pages},(_,i)=>`<button class="page-btn ${i+1===currentPage?'active':''}" data-p="${i+1}">${i+1}</button>`).join('');
+    }
+
+    // ---- FILTER HANDLERS ----
+    function applyFilters(){
+      const selProv=[...provContainer.querySelectorAll('input:checked')].map(c=>c.value);
+      const from=document.getElementById('dateFrom').value;
+      const to=document.getElementById('dateTo').value;
+      const query=document.getElementById('globalSearch').value.toLowerCase();
+      filtered=fiestas.filter(f=>{
+        const matchesProv= selProv.length?selProv.includes(f.ciudad):true;
+        const matchesFrom= from? new Date(f.fecha)>=new Date(from):true;
+        const matchesTo  = to? new Date(f.fecha)<=new Date(to):true;
+        const matchesQuery=f.titulo.toLowerCase().includes(query)||f.ciudad.toLowerCase().includes(query);
+        return matchesProv&&matchesFrom&&matchesTo&&matchesQuery;
+      });
+      currentPage=1;renderResults();
+    }
+
+    document.getElementById('applyFilters').addEventListener('click',applyFilters);
+    document.getElementById('globalSearchForm').addEventListener('submit',e=>{e.preventDefault();applyFilters();});
+    document.getElementById('pagination').addEventListener('click',e=>{if(e.target.matches('.page-btn')){currentPage=parseInt(e.target.dataset.p);renderResults();}});
+
+    renderResults();
+  </script>
+</body>
+</html>
+
