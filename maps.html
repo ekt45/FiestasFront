@@ -4,19 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Maps</title>
+
+  <!-- Leaflet core CSS -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+
   <style>
+    /* —— Reset + fuentes —— */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
+      display: flex;
+      flex-direction: column;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #e0e0e0;
       color: #333;
     }
 
+    /* —— Cabecera —— */
     header {
       background-color: #1f1f1f;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
-
     nav {
       display: flex;
       align-items: center;
@@ -25,24 +36,9 @@
       padding: 10px 30px;
       gap: 20px;
     }
-
-    .logo img {
-      height: 50px;
-    }
-
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      flex-grow: 1;
-      justify-content: center;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 25px;
-    }
-
+    .logo img { height: 50px; }
+    .nav-center { display: flex; align-items: center; gap: 40px; flex-grow: 1; justify-content: center; }
+    .nav-links { display: flex; gap: 25px; }
     .nav-links a {
       color: white;
       text-decoration: none;
@@ -51,16 +47,8 @@
       transition: background-color 0.3s ease, transform 0.2s ease;
       border-radius: 8px;
     }
-
-    .nav-links a:hover {
-      background-color: #333;
-      transform: scale(1.05);
-    }
-
-    .nav-links a.active {
-      background-color: #00bcd4;
-      font-weight: bold;
-    }
+    .nav-links a:hover { background-color: #333; transform: scale(1.05); }
+    .nav-links a.active { background-color: #00bcd4; font-weight: bold; }
 
     .search-bar {
       display: flex;
@@ -71,57 +59,29 @@
       gap: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
+    .search-bar input { border: none; outline: none; padding: 6px 8px; font-size: 1em; border-radius: 4px; }
+    .search-bar button { background-color: #00bcd4; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease; }
+    .search-bar button:hover { background-color: #0097a7; }
 
-    .search-bar input {
-      border: none;
-      outline: none;
-      padding: 6px 8px;
-      font-size: 1em;
-      border-radius: 4px;
+    /* —— Mapa —— */
+    #map {
+      flex: 1;              /* ocupa todo el alto restante debajo de la cabecera */
+      width: 100%;
     }
 
-    .search-bar button {
-      background-color: #00bcd4;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .search-bar button:hover {
-      background-color: #0097a7;
-    }
-
+    /* —— Adaptabilidad —— */
     @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .nav-center {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .nav-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .search-bar {
-        justify-content: center;
-      }
+      nav { flex-direction: column; align-items: center; }
+      .nav-center { flex-direction: column; gap: 10px; }
+      .nav-links { flex-direction: column; align-items: center; }
+      .search-bar { justify-content: center; }
     }
   </style>
 </head>
 <body>
   <header>
     <nav>
-      <a href="index.html" class="logo">
-        <img src="images/logo_ardilla.png" alt="Logo FIESTATS" />
-      </a>
+      <a href="index.html" class="logo"><img src="images/logo_ardilla.png" alt="Logo FIESTATS" /></a>
       <div class="nav-center">
         <form class="search-bar" action="list.html" method="GET">
           <input type="text" name="q" placeholder="Buscar fiestas..." />
@@ -135,5 +95,35 @@
       </div>
     </nav>
   </header>
+
+  <!-- Contenedor del mapa (ocupa todo el espacio restante) -->
+  <div id="map"></div>
+
+  <!-- Leaflet core JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <script>
+    // 1) Inicia el mapa – idéntico al de index.html
+    const map = L.map('map').setView([40.215, -3.185], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 2) Marcadores estáticos (mismos que en index.html)
+    const fiestas = [
+      {lat: 40.4168, lng: -3.7038, nota: 'San Antonio de la Florida — Madrid'},
+      {lat: 38.9862, lng: -3.9291, nota: 'La Pandorga — Ciudad Real'},
+      {lat: 40.48198, lng: -3.36454, nota: 'Fiestas Patronales — Alcalá de Henares'},
+      {lat: 38.9943, lng: -1.8564, nota: 'Feria de Albacete — Albacete'}
+    ];
+
+    fiestas.forEach(({lat, lng, nota}) => {
+      L.marker([lat, lng]).addTo(map).bindPopup(nota);
+    });
+  </script>
 </body>
 </html>
+

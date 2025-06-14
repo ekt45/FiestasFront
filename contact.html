@@ -3,125 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>List</title>
+  <title>Contacto</title>
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #e0e0e0;
-      color: #333;
-    }
+    /* —— Reset —— */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    header {
-      background-color: #1f1f1f;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
+    /* —— Fuente & colores —— */
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #e0e0e0; color: #333; display:flex; flex-direction:column; min-height:100vh; }
 
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      padding: 10px 30px;
-      gap: 20px;
-    }
+    /* —— Cabecera —— */
+    header { background-color: #1f1f1f; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    nav { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; padding:10px 30px; gap:20px; }
+    .logo img { height:50px; }
+    .nav-center { display:flex; align-items:center; gap:40px; flex-grow:1; justify-content:center; }
+    .nav-links { display:flex; gap:25px; }
+    .nav-links a { color:#fff; text-decoration:none; padding:0.6em 1.2em; font-size:1.05em; border-radius:8px; transition:background-color 0.3s, transform 0.2s; }
+    .nav-links a:hover { background-color:#333; transform:scale(1.05); }
+    .nav-links a.active { background-color:#00bcd4; font-weight:bold; }
+    .search-bar { display:flex; align-items:center; background-color:#fff; padding:6px 10px; border-radius:8px; gap:8px; box-shadow:0 2px 4px rgba(0,0,0,0.15); }
+    .search-bar input { border:none; outline:none; padding:6px 8px; font-size:1em; border-radius:4px; }
+    .search-bar button { background-color:#00bcd4; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; transition:background-color 0.3s; }
+    .search-bar button:hover { background-color:#0097a7; }
 
-    .logo img {
-      height: 50px;
-    }
+    /* —— Layout principal —— */
+    .contact-wrapper { flex:1; display:flex; height:calc(100vh - 82px); /* 82 ≈ header alto */ }
+    .contact-img { flex:1; position:relative; }
+    .contact-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      flex-grow: 1;
-      justify-content: center;
-    }
+    .contact-form-container { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 30px; background-color:#fafafa; }
+    form { width:100%; max-width:540px; }
+    form h2 { font-size:2rem; margin-bottom:30px; color:#333; }
 
-    .nav-links {
-      display: flex;
-      gap: 25px;
-    }
+    /* —— Inputs —— */
+    .form-group { display:flex; flex-direction:column; margin-bottom:20px; }
+    .form-group label { margin-bottom:6px; font-weight:600; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select { background:#efefef; border:none; border-radius:6px; padding:15px 14px; font-size:1em; transition:box-shadow 0.3s; }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { outline:none; box-shadow:0 0 0 3px rgba(0,188,212,0.35); }
+    textarea { resize:vertical; min-height:120px; }
 
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      padding: 0.6em 1.2em;
-      font-size: 1.05em;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      border-radius: 8px;
-    }
+    .hidden { display:none; }
 
-    .nav-links a:hover {
-      background-color: #333;
-      transform: scale(1.05);
-    }
+    .btn-submit { width:100%; padding:14px 0; background:#333; color:#fff; font-size:1.05em; border:none; border-radius:6px; cursor:pointer; transition:background 0.3s; }
+    .btn-submit:hover { background:#111; }
 
-    .nav-links a.active {
-      background-color: #00bcd4;
-      font-weight: bold;
-    }
+    .form-message { margin-top:15px; font-size:0.95em; font-weight:600; }
+    .form-message.success { color:#2e7d32; }
+    .form-message.error { color:#c62828; }
 
-    .search-bar {
-      display: flex;
-      align-items: center;
-      background-color: #fff;
-      padding: 6px 10px;
-      border-radius: 8px;
-      gap: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
-
-    .search-bar input {
-      border: none;
-      outline: none;
-      padding: 6px 8px;
-      font-size: 1em;
-      border-radius: 4px;
-    }
-
-    .search-bar button {
-      background-color: #00bcd4;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .search-bar button:hover {
-      background-color: #0097a7;
-    }
-
-    @media (max-width: 768px) {
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .nav-center {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .nav-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .search-bar {
-        justify-content: center;
-      }
+    /* —— Responsive —— */
+    @media (max-width: 900px) {
+      .contact-wrapper { flex-direction:column; height:auto; }
+      .contact-img { height:250px; }
     }
   </style>
 </head>
 <body>
+  <!-- —— Cabecera —— -->
   <header>
     <nav>
-      <a href="index.html" class="logo">
-        <img src="images/logo_ardilla.png" alt="Logo FIESTATS" />
-      </a>
+      <a href="index.html" class="logo"><img src="images/logo_ardilla.png" alt="Logo FIESTATS" /></a>
       <div class="nav-center">
         <form class="search-bar" action="list.html" method="GET">
           <input type="text" name="q" placeholder="Buscar fiestas..." />
@@ -135,5 +80,108 @@
       </div>
     </nav>
   </header>
+
+  <!-- —— Cuerpo —— -->
+  <section class="contact-wrapper">
+    <div class="contact-img">
+      <!-- Sustituye la ruta de la imagen por la que quieras mostrar -->
+      <img src="images/logo_ardilla.png" alt="Imagen de contacto">
+    </div>
+
+    <div class="contact-form-container">
+      <form id="contactForm" novalidate>
+        <h2>Formulario de contacto</h2>
+
+        <div class="form-group">
+          <label for="nombre">Nombre *</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="apellidos">Apellidos *</label>
+          <input type="text" id="apellidos" name="apellidos" placeholder="Ingresa tus apellidos" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Correo electrónico *</label>
+          <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required />
+        </div>
+        <div class="form-group">
+          <label for="motivo">Motivo de contacto *</label>
+          <select id="motivo" name="motivo" required>
+            <option value="" disabled selected>— Selecciona motivo —</option>
+            <option value="nueva-fiesta">Solicitud de añadir una nueva fiesta no registrada</option>
+            <option value="promocion">Promoción o colaboración</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <!-- ——— Extra Nueva fiesta ——— -->
+        <div id="extra-fiesta" class="hidden">
+          <div class="form-group">
+            <label for="fiesta-link">Enlace oficial de la fiesta *</label>
+            <input type="url" id="fiesta-link" name="fiesta-link" placeholder="https://…" />
+          </div>
+          <div class="form-group">
+            <label for="fiesta-info">Más información *</label>
+            <textarea id="fiesta-info" name="fiesta-info" placeholder="Describe brevemente la fiesta"></textarea>
+          </div>
+        </div>
+
+        <!-- ——— Extra Promoción/colaboración ——— -->
+        <div id="extra-promo" class="hidden">
+          <div class="form-group">
+            <label for="promo-message">Mensaje *</label>
+            <textarea id="promo-message" name="promo-message" placeholder="Indica nombre de entidad o particular y tu propuesta"></textarea>
+          </div>
+        </div>
+
+        <!-- ——— Extra Otros ——— -->
+        <div id="extra-otro" class="hidden">
+          <div class="form-group">
+            <label for="otro-message">Mensaje *</label>
+            <textarea id="otro-message" name="otro-message" placeholder="Ingresa tu mensaje, pregunta o recomendación"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Enviar</button>
+        <p id="formMessage" class="form-message"></p>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    // Manejar campos extra según motivo
+    const motivoSelect = document.getElementById('motivo');
+    const blocks = {
+      'nueva-fiesta': document.getElementById('extra-fiesta'),
+      'promocion':    document.getElementById('extra-promo'),
+      'otro':         document.getElementById('extra-otro')
+    };
+    const requiredMap = {
+      'nueva-fiesta': ['fiesta-link', 'fiesta-info'],
+      'promocion':    ['promo-message'],
+      'otro':         ['otro-message']
+    };
+    function updateExtraFields(){
+      Object.values(blocks).forEach(b=>b.classList.add('hidden'));
+      Object.values(requiredMap).flat().forEach(id=>{const el=document.getElementById(id); if(el) el.required=false;});
+      const val=motivoSelect.value;
+      if(blocks[val]){ blocks[val].classList.remove('hidden'); requiredMap[val].forEach(id=>{const el=document.getElementById(id); if(el) el.required=true;}); }
+    }
+    motivoSelect.addEventListener('change',updateExtraFields);
+    window.addEventListener('DOMContentLoaded',updateExtraFields);
+
+    // Validación y mensaje
+    const form=document.getElementById('contactForm');
+    const formMessage=document.getElementById('formMessage');
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      if(!form.checkValidity()){ formMessage.textContent='Algún campo obligatorio está vacío o incorrecto.'; formMessage.className='form-message error'; return; }
+      formMessage.textContent='¡Mensaje enviado!';
+      formMessage.className='form-message success';
+      form.reset();
+      updateExtraFields();
+    });
+  </script>
 </body>
 </html>
+
